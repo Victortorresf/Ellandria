@@ -27,8 +27,6 @@ class MediaPlayer : Fragment(R.layout.media_player) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         view.findViewById<RecyclerView>(R.id.list_audio).layoutManager = LinearLayoutManager(activity)
         view.findViewById<RecyclerView>(R.id.list_audio).setHasFixedSize(true)
 
@@ -37,7 +35,6 @@ class MediaPlayer : Fragment(R.layout.media_player) {
             val filename = MediaStore.Audio.Media.TITLE
             recordings.add(Item(filename))
         }   
-
 
         list_audio.adapter = Adapter(recordings, object : Adapter.OnClickListener {
             override fun onItemClick(position: Int) {
@@ -53,9 +50,7 @@ class MediaPlayer : Fragment(R.layout.media_player) {
 
             if (mp == null){
                 mp = MediaPlayer.create(activity, uri)
-                //Error on line 46 - audioSessionId
                 Log.d("MediaPlayer", "ID: ${mp!!.audioSessionId}")
-
                 initialiseSeekBar()
             }
             mp?.start()
