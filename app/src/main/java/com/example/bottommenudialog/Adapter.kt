@@ -1,36 +1,36 @@
-package com.example.bottommenudialog
-
+import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.BaseAdapter
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.FragmentActivity
 
-class Adapter(private val itemList: ArrayList<Item>, private val onClickListener: OnClickListener): RecyclerView.Adapter<Adapter.CustomViewHolder>() {
+class Adapter(var itemList:ArrayList<Item>, var context: FragmentActivity?): BaseAdapter() {
 
-    interface OnClickListener{
-        fun onItemClick(position: Int)
+    @SuppressLint("ViewHolder", "InflateParams")
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+
+        val recyclerItem = itemList[position]
+        val inflator = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val itView = inflator.inflate(R.layout.item, null)
+
+        itView.findViewById<TextView>(R.id.name).text = recyclerItem.name
+
+        return itView
     }
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
-
-    class CustomViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
-        //var ct: TextView = itemView.findViewById<TextView>(R.id.content)
-        var tx: TextView = itemView.findViewById<TextView>(R.id.name)
+    override fun getItem(position: Int): Any {
+        return itemList[position]
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false)
-        return CustomViewHolder(itemView)
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
-    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-        val currentItem = itemList[position]
-        holder.tx.text = currentItem.name
-    }
-
-    override fun getItemCount(): Int {
+    override fun getCount(): Int {
         return itemList.size
     }
-}
 
+}
