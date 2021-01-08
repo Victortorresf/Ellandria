@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_record.*
 import java.io.IOException
 
 class Record : Fragment(R.layout.fragment_record) {
-    var music = 0
+
     private val list = ArrayList<Item>()
 
     override fun onCreateView(
@@ -30,30 +30,29 @@ class Record : Fragment(R.layout.fragment_record) {
         return inflater.inflate(R.layout.fragment_record, container, false)
     }
 
-    private var state: Boolean = false
+     private var state: Boolean = false
     private var record: MediaRecorder? = null
     private var recordingStopped: Boolean = false
+    private var adaptor:Adapter?=null
 
     @SuppressLint("CutPasteId")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        list.add(Item("Dash", Environment.getExternalStorageDirectory().absolutePath + "/Dash.mp3"))
+        list.add(Item("Jump", Environment.getExternalStorageDirectory().absolutePath + "/Jump.mp3"))
+        list.add(Item("Collect Trophy", Environment.getExternalStorageDirectory().absolutePath + "/Trophy.mp3"))
 
-        view.findViewById<RecyclerView>(R.id.recycler).layoutManager = LinearLayoutManager(activity)
-        view.findViewById<RecyclerView>(R.id.recycler).setHasFixedSize(true)
+        adaptor = Adapter(list, activity)
+        recycler.adapter = adaptor
+
+        var path = Environment.getExternalStorageDirectory().absolutePath + "/recording.mp3"
 
 
-        list.add(Item("Dash"))
-        list.add(Item("Jump"))
-        list.add(Item("Collect Trophy"))
+        recycler.setOnItemClickListener { parent, view, position, list ->
+            path = list.toString()
+        }
 
-        recycler.adapter = Adapter(list, object : Adapter.OnClickListener {
-            override fun onItemClick(position: Int) {
-                Toast.makeText(activity, "$list.name", Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        val path = Environment.getExternalStorageDirectory().absolutePath + "/Ellandria/recording_$music.mp3"
         record = MediaRecorder()
 
         record?.setAudioSource(MediaRecorder.AudioSource.MIC)
