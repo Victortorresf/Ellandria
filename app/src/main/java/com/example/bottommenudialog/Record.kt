@@ -49,7 +49,7 @@ class Record : Fragment(R.layout.fragment_record) {
         var path = Environment.getExternalStorageDirectory().absolutePath + "/recording.mp3"
 
 
-        recycler.setOnItemClickListener { parent, view, position, list ->
+        recycler.setOnItemClickListener { _, _, _, list ->
             path = list.toString()
         }
 
