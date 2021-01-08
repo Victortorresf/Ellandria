@@ -1,4 +1,4 @@
 package com.example.bottommenudialog
 
-data class Item(val name:String) {
+data class Item(val name:String, val list:String) {
 }
