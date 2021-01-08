@@ -12,9 +12,8 @@ import kotlinx.android.synthetic.main.media_player.*
 
 class MediaPlayer : Fragment(R.layout.media_player) {
 
-    //private val recorded_audio = ArrayList<Item>()
     private var mp: MediaPlayer? = null
-    //private var currentSong = mutableListOf(parse("/Armazenamento interno/Beat It.mp3"))
+    private val recordings = ArrayList<Item>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,30 +23,48 @@ class MediaPlayer : Fragment(R.layout.media_player) {
         return inflater.inflate(R.layout.media_player, container, false)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val path = ("/Armazenamento interno/Ellandria/Beat It.mp3")
+
+
+        view.findViewById<RecyclerView>(R.id.list_audio).layoutManager = LinearLayoutManager(activity)
+        view.findViewById<RecyclerView>(R.id.list_audio).setHasFixedSize(true)
+
+        recordings.add(Item("hello"))
+        (Environment.getExternalStorageDirectory().absolutePath + "/Ellandria").forEach {
+            val filename = MediaStore.Audio.Media.TITLE
+            recordings.add(Item(filename))
+        }   
+
+
+        list_audio.adapter = Adapter(recordings, object : Adapter.OnClickListener {
+            override fun onItemClick(position: Int) {
+            }
+        })
+
+        val path = Uri.parse(Environment.getExternalStorageDirectory().absolutePath + "/Ellandria/recording_0.mp3")
         controlSound(path)
     }
 
-    private fun controlSound(uri: String){
+    private fun controlSound(uri: Uri){
         fab_play.setOnClickListener{
 
             if (mp == null){
-                mp = MediaPlayer.create(activity, Uri.parse(uri))
+                mp = MediaPlayer.create(activity, uri)
                 //Error on line 46 - audioSessionId
-                //Log.d("MediaPlayer", "ID: ${mp!!.audioSessionId}")
+                Log.d("MediaPlayer", "ID: ${mp!!.audioSessionId}")
 
-               // initialiseSeekBar()
+                initialiseSeekBar()
             }
             mp?.start()
-            //Log.d("MediaPlayer", "Duration: ${mp!!.duration / 1000} seconds")
+            Log.d("MediaPlayer", "Duration: ${mp!!.duration / 1000} seconds")
         }
 
         fab_pause.setOnClickListener{
             if (mp !== null) mp?.pause()
-            //Log.d("MediaPlayer", "Paused at: ${mp!!.currentPosition / 1000} seconds")
+            Log.d("MediaPlayer", "Paused at: ${mp!!.currentPosition / 1000} seconds")
         }
 
         fab_stop.setOnClickListener {
@@ -59,7 +76,7 @@ class MediaPlayer : Fragment(R.layout.media_player) {
             }
         }
 
-        /*seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) mp?.seekTo(progress)
             }
@@ -69,10 +86,10 @@ class MediaPlayer : Fragment(R.layout.media_player) {
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
             }
-        })*/
+        })
     }
 
-    /*private fun initialiseSeekBar() {
+    private fun initialiseSeekBar() {
         seekBar.max = mp!!.duration
 
         val handler = Handler()
@@ -86,5 +103,5 @@ class MediaPlayer : Fragment(R.layout.media_player) {
                 }
             }
         }, 0)
-    }*/
+    }
 }
